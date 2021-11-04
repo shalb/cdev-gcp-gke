@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+  argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: external-dns
+    targetRevision: 4.4.3
+    helm:
+      values: |
+        rbac:
+          create: "true"
+        provider: google
+        google:
+          project: {{ .secret.prod.project }}
+          ## @param google.serviceAccountSecret When using the Google provider, specify the existing secret which contains credentials.json (optional)
+          ##
+          serviceAccountSecret: ""
+          ## @param google.serviceAccountSecretKey When using the Google provider with an existing secret, specify the key name (optional)
+          ##
+          serviceAccountSecretKey: "credentials.json"
+          ## @param google.serviceAccountKey When using the Google provider, specify the service account key JSON file. In this case a new secret will be created holding this service account (optional)
+          ##
+          serviceAccountKey: ""
+        interval: "1m"
+        policy: "sync"
+        metrics:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=true
+      - CreateNamespace=true
