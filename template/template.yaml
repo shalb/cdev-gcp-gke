@@ -1,0 +1,61 @@
+# Define common go-template variables for templating
+{{- $createVpcCIDR := "10.8.0.0/18" -}}
+{{- $google_compute_subnetwork_cidr_range := "10.70.0.0/18" -}}
+{{- $services_cidr_range := "10.70.64.0/18" -}}
+{{- $cluster_cidr_range := "10.70.128.0/17" -}}
+{{- $region := .variables.region -}}
+# Define common used anchors
+_p: &provider_gcp
+- gcs:
+    project: {{ .variables.project }}
+    region: {{ .variables.region }}
+
+# Define template
+kind: StackTemplate
+name: gcp-gke
+# Define units itself
+units:
+  {{- if not .variables.vpc_id }}
+  -
+    name: vpc
+    type: tfmodule
+    providers: *provider_gcp
+    source: terraform-google-modules/network/google
+    version: "5.2.0"
+    inputs:
+      project_id: {{ .variables.project }}
+      network_name: {{ .variables.environment }}-network
+      routing_mode: "GLOBAL"
+      subnets:
+        {
+          subnet_name           = {{ .variables.environment }}-network
+          subnet_ip             = $google_compute_subnetwork_cidr_range
+          subnet_region         = var.region
+          subnet_private_access = true
+        }
+      secondary_ranges:
+        {{ .variables.environment }}-subnetwork" = [
+          {
+            range_name    = {{ .variables.environment }}-pods
+            ip_cidr_range = $cluster_cidr_range
+          },
+          {
+            range_name    = {{ .variables.environment }}-services
+            ip_cidr_range = $services_cidr_range
+          }
+        ]
+      routes:
+        {
+          name              = "egress-internet"
+          description       = "route through IGW to access internet"
+          destination_range = "0.0.0.0/0"
+          tags              = "egress-inet"
+          next_hop_internet = "true"
+        }
+  -
+    name: outputs
+    type: printer
+    outputs:
+      cluster_name: {{ .variables.cluster_name }}
+      region: {{ .variables.region }}
+      {{- end }}

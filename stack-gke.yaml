@@ -1,0 +1,12 @@
+# Init template variables, don't remove this comments:
+# {{ $privateSubnet0 := remoteState "eks.vpc.public_subnets[0]" }}
+name: cluster
+template: "./template/"
+kind: Stack
+backend: gcs-backend
+variables:
+  region: {{ .project.variables.region }}
+  project: {{ .project.variables.project }}
+  organization: {{ .project.variables.organization }}
+  cluster_name: demo-gke
+  environment: "demo-env"
