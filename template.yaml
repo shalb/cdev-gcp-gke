@@ -27,35 +27,27 @@ units:
       network_name: {{ .variables.environment }}-network
       routing_mode: "GLOBAL"
       subnets:
-        {
-          subnet_name           = {{ .variables.environment }}-network
-          subnet_ip             = $google_compute_subnetwork_cidr_range
-          subnet_region         = var.region
-          subnet_private_access = true
-        }
+        subnet_name: {{ .variables.environment }}-network
+        subnet_ip: {{ $google_compute_subnetwork_cidr_range }}
+        subnet_region: {{ .variables.region }}
+        subnet_private_access: true
       secondary_ranges:
-        {{ .variables.environment }}-subnetwork" = [
-          {
-            range_name    = {{ .variables.environment }}-pods
-            ip_cidr_range = $cluster_cidr_range
-          },
-          {
-            range_name    = {{ .variables.environment }}-services
-            ip_cidr_range = $services_cidr_range
-          }
-        ]
+        {{ .variables.environment }}-subnetwork":
+          - range_name: {{ .variables.environment }}-pods
+            ip_cidr_range: {{ $cluster_cidr_range }}
+          - range_name: {{ .variables.environment }}-services
+            ip_cidr_range: {{ $services_cidr_range }}
       routes:
-        {
-          name              = "egress-internet"
-          description       = "route through IGW to access internet"
-          destination_range = "0.0.0.0/0"
-          tags              = "egress-inet"
-          next_hop_internet = "true"
-        }
+        name: "egress-internet"
+        description: "route through IGW to access internet"
+        destination_range: "0.0.0.0/0"
+        tags: "egress-inet"
+        next_hop_internet: "true"
+  {{- end }}
   -
     name: outputs
     type: printer
     outputs:
       cluster_name: {{ .variables.cluster_name }}
       region: {{ .variables.region }}
-      {{- end }}
+
