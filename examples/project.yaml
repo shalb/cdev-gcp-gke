@@ -4,6 +4,6 @@ backend: default
 variables:
   organization: my-organization
   project: my-project
-  region: us-central-1
+  region: us-west1
   state_bucket_name: my-bucket
   state_bucket_prefix: demo
