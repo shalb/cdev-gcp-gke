@@ -23,31 +23,31 @@ The resources to be created:
 ## Quick Start
 
 1. Create GCO bucket for terraform backend
-```
-gcloud projects create PROJECT_ID
-gcloud config set project PROJECT_ID
-gsutil mb gs://gke-demo-state
-```
+    ```
+    gcloud projects create cdev-demo
+    gcloud config set project cdev-demo
+    gsutil mb gs://gke-demo-state
+    ```
 
 2. Clone example project:
     ```
     git clone https://github.com/shalb/cdev-gcp-gke.git
     cd examples/
     ```
-   Update project.yaml
-   ```
-name: demo-project
-kind: Project
-backend: default
-variables:
-  organization: my-organization
-  project: PROJECT_ID
-  region: us-west1
-  state_bucket_name: gke-demo-state
-  state_bucket_prefix: demo
-```
+3. Update project.yaml
+    ```
+    name: demo-project
+    kind: Project
+    backend: default
+    variables:
+      organization: my-organization
+      project: cdev-demo
+      region: us-west1
+      state_bucket_name: gke-demo-state
+      state_bucket_prefix: demo
+    ```
 
-3. Edit variables in the example's files, if necessary.
-4. Run `cdev plan`
-5. Run `cdev apply`
+4. Edit variables in the example's files, if necessary.
+5. Run `cdev plan`
+6. Run `cdev apply`
 
