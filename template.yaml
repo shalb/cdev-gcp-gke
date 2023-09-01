@@ -108,9 +108,23 @@ units:
           node_locations: {{ .variables.region }}-a
           preemptible: false
   -
+    name: gke-addons
+    type: tfmodule
+    providers: *provider_gcp
+    source: "github.com/shalb/terraform-gke-addons?ref=main"
+    depends_on: this.gke
+    inputs:
+      gke_endpoint: {{ remoteState "this.gke.endpoint" }}
+      gke_ca_certificate: {{ remoteState "this.gke.ca_certificate" }}
+      cluster-name: "{{ .variables.environment }}-cluster"
+      project_id: {{ .variables.project }}
+      enable_reloader: true
+      enable_nginx: true
+      enable_cert_manager: true
+      enable_external_secrets: true
+  -
     name: outputs
     type: printer
     outputs:
       cluster_name: {{ .variables.cluster_name }}
       region: {{ .variables.region }}
-
