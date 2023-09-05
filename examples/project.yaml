@@ -3,7 +3,7 @@ kind: Project
 backend: default
 variables:
   organization: my-organization
-  project: my-project
+  project: cdev-demo
   region: us-west1
-  state_bucket_name: my-bucket
+  state_bucket_name: gke-demo-state
   state_bucket_prefix: demo
