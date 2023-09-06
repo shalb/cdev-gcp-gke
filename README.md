@@ -74,3 +74,17 @@ The resources to be created:
     gcloud components install gke-gcloud-auth-plugin
     gcloud container clusters get-credentials demo-env-cluster --zone us-west1-a --project cdev-demo
     ```
+8. Reset ArgoCD admin password
+   install argocd cli 
+    ```
+    argocd account bcrypt --password somepass
+    $2a$10$uMKkVIexTYNKLQ2F5yVE1OaKQIKEhFdd96qOYNMfjCjFLE2F9Af/u%
+
+    kubectl -n argocd patch secret argocd-secret \
+      -p '{"stringData": {
+        "admin.password": "$2a$10$uMKkVIexTYNKLQ2F5yVE1OaKQIKEhFdd96qOYNMfjCjFLE2F9Af/u%",
+        "admin.passwordMtime": "'$(date +%FT%T%Z)'"
+      }}'
+   ```
+
+

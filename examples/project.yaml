@@ -4,6 +4,7 @@ backend: default
 variables:
   organization: my-organization
   project: cdev-demo
+  domain: gcp.cluster.dev
   region: us-west1
   state_bucket_name: gke-demo-state
   state_bucket_prefix: demo
