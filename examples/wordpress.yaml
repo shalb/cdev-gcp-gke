@@ -1,0 +1,6 @@
+name: wordpress
+template: "./wordpress/"
+kind: Stack
+backend: gcs-backend
+variables:
+  domain: {{ .project.variables.environment}}.{{ .project.variables.domain }}
