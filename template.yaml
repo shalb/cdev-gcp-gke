@@ -15,6 +15,17 @@ kind: StackTemplate
 name: gcp-gke
 # Define units itself
 units:
+  -
+    name: cloud-dns
+    type: tfmodule
+    providers: *provider_gcp
+    source: terraform-google-modules/cloud-dns/google
+    version: "5.1.0"
+    inputs:
+      project_id: {{ .variables.project }}
+      domain: {{ .variables.environment }}.{{ .variables.domain }}.
+      name: {{ .variables.environment }}-zone
+      type: public
   {{- if not .variables.vpc_id }}
   -
     name: vpc
@@ -111,7 +122,7 @@ units:
     name: gke-addons
     type: tfmodule
     providers: *provider_gcp
-    source: "github.com/shalb/terraform-gke-addons?ref=0.0.3"
+    source: "github.com/shalb/terraform-gke-addons?ref=0.0.6"
     depends_on: this.gke
     inputs:
       gke_endpoint: {{ remoteState "this.gke.endpoint" }}
@@ -122,10 +133,13 @@ units:
       enable_cert_manager: true
       enable_external_secrets: true
       enable_argocd: true
-      domain: {{ .variables.domain }}
+      enable_external_dns: true
+      domain: {{ .variables.environment }}.{{ .variables.domain }}
   -
     name: outputs
     type: printer
     outputs:
-      cluster_name: {{ .variables.cluster_name }}
       region: {{ .variables.region }}
+      name_server: {{ remoteState "this.cloud-dns.name_servers" }}
+      domain: {{ remoteState "this.cloud-dns.domain" }}
+      argocd_url: argocd.{{ remoteState "this.cloud-dns.domain" }}

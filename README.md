@@ -11,6 +11,8 @@ The resources to be created:
   * cert-manager
   * ingress-nginx
   * external-secrets
+  * external-dns
+  * argocd
 
 ## Prerequisites
 
@@ -19,6 +21,7 @@ The resources to be created:
 3. GCloud CLI installed and configured with your GCP account.
 4. kubectl installed.
 5. [Cluster.dev client installed](https://docs.cluster.dev/get-started-install/).
+6. Parent Domain
 
 ## Before you begin
 
@@ -65,16 +68,33 @@ The resources to be created:
 4. Edit variables in the example's files, if necessary.
 5. Run `cdev plan`
 6. Run `cdev apply`
-7. Authorize cdev/terraform to interact with GCP via SDK
+7. Setup DNS delegation for subdomain by creating
+   NS records for subdomain in parent domain
+   Run `cdev output`
+   ```
+   cdev output
+   12:58:52 [INFO] Printer: 'cluster.outputs', Output:
+   domain = demo.gcp.cluster.dev.
+   name_server = [
+     "ns-cloud-d1.googledomains.com.",
+     "ns-cloud-d2.googledomains.com.",
+     "ns-cloud-d3.googledomains.com.",
+     "ns-cloud-d4.googledomains.com."
+   ]
+   region = us-west1
+   ```
+   add records from name_server list
+
+8. Authorize cdev/terraform to interact with GCP via SDK
     ```
     gcloud auth application-default login
     ```
-7. Connect to GKE cluster
+9. Connect to GKE cluster
     ```
     gcloud components install gke-gcloud-auth-plugin
-    gcloud container clusters get-credentials demo-env-cluster --zone us-west1-a --project cdev-demo
+    gcloud container clusters get-credentials demo-cluster --zone us-west1-a --project cdev-demo
     ```
-8. Reset ArgoCD admin password
+10. Reset ArgoCD admin password
    install argocd cli 
     ```
     argocd account bcrypt --password somepass
@@ -86,5 +106,3 @@ The resources to be created:
         "admin.passwordMtime": "'$(date +%FT%T%Z)'"
       }}'
    ```
-
-

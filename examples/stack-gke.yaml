@@ -6,7 +6,8 @@ variables:
   region: {{ .project.variables.region }}
   project: {{ .project.variables.project }}
   organization: {{ .project.variables.organization }}
-  environment: demo-env
+  domain: {{ .project.variables.domain }}
+  environment: demo
   node_pool_disk_size_gb: 10
   node_pool_disk_type: pd-standard
   node_pool_initial_node_count: 1
