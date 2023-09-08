@@ -10,7 +10,7 @@ The resources to be created:
 * GKE Kubernetes cluster with addons:
   * cert-manager
   * ingress-nginx
-  * external-secrets
+  * external-secrets (with GCP Secret Manager backend)
   * external-dns
   * argocd
 
