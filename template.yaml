@@ -135,6 +135,18 @@ units:
       enable_argocd: true
       enable_external_dns: true
       domain: {{ .variables.environment }}.{{ .variables.domain }}
+  - 
+    name: kubeconfig
+    type: shell
+    force_apply: true
+    depends_on: this.gke
+    apply:
+      commands:
+        - KUBECONFIG=./kubeconfig gcloud container clusters get-credentials {{ .variables.environment }}-cluster --zone {{ .variables.region }}-a
+        - echo "kubeconfig_path=$(pwd)/kubeconfig"
+    outputs: 
+      type: separator
+      separator: "="
   -
     name: outputs
     type: printer
@@ -142,4 +154,7 @@ units:
       region: {{ .variables.region }}
       name_server: {{ remoteState "this.cloud-dns.name_servers" }}
       domain: {{ remoteState "this.cloud-dns.domain" }}
+      {{- if eq .variables.gke_addons.enable_argocd true }}
+      argocd_password: kubectl -n argocd get secret argocd-initial-admin-secret  -o jsonpath="{.data.password}" | base64 -d; echo
       argocd_url: argocd.{{ remoteState "this.cloud-dns.domain" }}
+      {{- end }}

@@ -3,4 +3,5 @@ template: "./wordpress/"
 kind: Stack
 backend: gcs-backend
 variables:
+  kubeconfig_path: ./kubeconfig
   domain: {{ .project.variables.environment}}.{{ .project.variables.domain }}
