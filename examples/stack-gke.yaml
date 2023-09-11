@@ -8,9 +8,36 @@ variables:
   organization: {{ .project.variables.organization }}
   domain: {{ .project.variables.domain }}
   environment: {{ .project.variables.environment}}
-  node_pool_disk_size_gb: 10
-  node_pool_disk_type: pd-standard
-  node_pool_initial_node_count: 1
-  node_pool_machine_type: e2-standard-4
-  node_pool_max_count: 4
-  node_pool_min_count: 1
+  node_pools:
+    - name: "{{ .project.variables.environment }}-primary-node-pool"
+      auto_repair: true
+      auto_upgrade: true
+      create_service_account: true
+      enable_secure_boot: true
+      disk_size_gb: 10
+      disk_type: pd-standard
+      enable_gcfs: false
+      image_type: "COS_CONTAINERD"
+      initial_node_count: 1
+      local_ssd_count: 0
+      machine_type: e2-standard-2
+      max_count: 4
+      min_count: 1
+      node_locations: {{ .project.variables.region }}-a
+      preemptible: false
+    - name: "{{ .project.variables.environment }}-secondary-node-pool"
+      auto_repair: true
+      auto_upgrade: true
+      create_service_account: true
+      enable_secure_boot: true
+      disk_size_gb: 10
+      disk_type: pd-standard
+      enable_gcfs: false
+      image_type: "COS_CONTAINERD"
+      initial_node_count: 0
+      local_ssd_count: 0
+      machine_type: e2-standard-4
+      max_count: 4
+      min_count: 1
+      node_locations: {{ .project.variables.region }}-b
+      preemptible: false
