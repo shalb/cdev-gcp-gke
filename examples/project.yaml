@@ -1,6 +1,6 @@
 name: demo-project
 kind: Project
-backend: default
+backend: gcs-backend
 variables:
   organization: my-organization
   project: cdev-demo

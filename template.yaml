@@ -127,7 +127,7 @@ units:
     name: kubeconfig
     type: shell
     force_apply: true
-    depends_on: this.gke
+    depends_on: this.gke-addons
     apply:
       commands:
         - cd ../../../
